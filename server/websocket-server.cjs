@@ -13,15 +13,15 @@ console.log(`WebSocket server running on ws://localhost:${PORT}`);
 wss.on('connection', (ws) => {
   const clientId = uuidv4();
   clients.set(clientId, ws);
-  
+
   console.log(`Client ${clientId} connected`);
-  
+
   // Send existing messages to new client
   ws.send(JSON.stringify({
     type: 'message_history',
     messages: messages
   }));
-  
+
   // Send current user count
   broadcast({
     type: 'user_count',
@@ -31,7 +31,7 @@ wss.on('connection', (ws) => {
   ws.on('message', (data) => {
     try {
       const message = JSON.parse(data.toString());
-      
+
       switch (message.type) {
         case 'send_message':
           const newMessage = {
@@ -41,21 +41,21 @@ wss.on('connection', (ws) => {
             timestamp: new Date().toISOString(),
             component: message.component || 'unknown'
           };
-          
+
           messages.push(newMessage);
-          
+
           // Keep only last 100 messages
           if (messages.length > 100) {
             messages.shift();
           }
-          
+
           // Broadcast to all clients
           broadcast({
             type: 'new_message',
             message: newMessage
           });
           break;
-          
+
         case 'typing':
           // Broadcast typing indicator to other clients
           broadcastToOthers(clientId, {
@@ -73,7 +73,7 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     clients.delete(clientId);
     console.log(`Client ${clientId} disconnected`);
-    
+
     // Update user count
     broadcast({
       type: 'user_count',

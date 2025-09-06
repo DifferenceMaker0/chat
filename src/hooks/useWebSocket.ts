@@ -30,18 +30,18 @@ export const useWebSocket = (url: string): UseWebSocketReturn => {
       // Dynamically construct WebSocket URL for webcontainer environment
       const hostname = window.location.hostname;
       let wsUrl: string;
-      
+
       if (hostname.includes('webcontainer-api.io')) {
         // In webcontainer, replace the port in the hostname
         const newHostname = hostname.replace(/--\d+--/, '--8080--');
-        wsUrl = `ws://${newHostname}/`;
+        wsUrl = `ws://${newHostname}`;
       } else {
         // Standard localhost or custom domain
         wsUrl = url;
       }
-      
+
       ws.current = new WebSocket(wsUrl);
-      
+
       ws.current.onopen = () => {
         console.log('Connected to WebSocket server');
         setIsConnected(true);
@@ -49,11 +49,11 @@ export const useWebSocket = (url: string): UseWebSocketReturn => {
           clearTimeout(reconnectTimeoutRef.current);
         }
       };
-      
+
       ws.current.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          
+
           switch (data.type) {
             case 'message_history':
               setMessages(data.messages);
@@ -78,18 +78,18 @@ export const useWebSocket = (url: string): UseWebSocketReturn => {
           console.error('Error parsing WebSocket message:', error);
         }
       };
-      
+
       ws.current.onclose = () => {
         console.log('Disconnected from WebSocket server');
         setIsConnected(false);
-        
+
         // Attempt to reconnect after 3 seconds
         reconnectTimeoutRef.current = setTimeout(() => {
           console.log('Attempting to reconnect...');
           connect();
         }, 3000);
       };
-      
+
       ws.current.onerror = (error) => {
         console.error('WebSocket error:', error);
       };
@@ -100,7 +100,7 @@ export const useWebSocket = (url: string): UseWebSocketReturn => {
 
   useEffect(() => {
     connect();
-    
+
     return () => {
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);

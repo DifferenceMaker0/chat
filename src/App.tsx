@@ -10,14 +10,14 @@ import { useWebSocket } from './hooks/useWebSocket';
 function App() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState<'chat' | 'support' | 'notifications'>('chat');
-  
-  const { 
-    messages, 
-    sendMessage, 
-    isConnected, 
-    userCount, 
-    typingUsers, 
-    sendTyping 
+
+  const {
+    messages,
+    sendMessage,
+    isConnected,
+    userCount,
+    typingUsers,
+    sendTyping
   } = useWebSocket('ws://localhost:8080');
 
   const openDialog = (type: 'chat' | 'support' | 'notifications') => {
@@ -35,8 +35,8 @@ function App() {
         return (
           <>
             <ConnectionStatus isConnected={isConnected} userCount={userCount} />
-            <MessageList 
-              messages={messages} 
+            <MessageList
+              messages={messages}
               typingUsers={typingUsers}
               currentComponent="chat"
             />
@@ -59,8 +59,8 @@ function App() {
                 <strong>Support Channel:</strong> Get help from our team or community members.
               </p>
             </div>
-            <MessageList 
-              messages={messages.filter(msg => msg.component === 'support')} 
+            <MessageList
+              messages={messages.filter(msg => msg.component === 'support')}
               typingUsers={typingUsers}
               currentComponent="support"
             />
@@ -83,8 +83,8 @@ function App() {
                 <strong>Notifications Channel:</strong> System updates and announcements.
               </p>
             </div>
-            <MessageList 
-              messages={messages.filter(msg => msg.component === 'notification')} 
+            <MessageList
+              messages={messages.filter(msg => msg.component === 'notification')}
               typingUsers={typingUsers}
               currentComponent="notification"
             />
@@ -106,12 +106,12 @@ function App() {
       <div className="max-w-md w-full bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="px-6 py-8">
           <h1 className="text-2xl font-bold text-center text-gray-900 mb-6">Real-time Messaging System</h1>
-          
+
           <p className="text-gray-600 mb-8 text-center">
-            Open different messaging channels to send and receive real-time messages. 
+            Open different messaging channels to send and receive real-time messages.
             Each channel operates independently with live updates.
           </p>
-          
+
           <div className="space-y-4">
             <Button
               fullWidth
@@ -121,7 +121,7 @@ function App() {
               <MessageSquare size={18} className="mr-2" />
               General Chat
             </Button>
-            
+
             <Button
               variant="secondary"
               fullWidth
@@ -131,7 +131,7 @@ function App() {
               <Headphones size={18} className="mr-2" />
               Support Channel
             </Button>
-            
+
             <Button
               variant="outline"
               fullWidth
@@ -142,7 +142,7 @@ function App() {
               Notifications
             </Button>
           </div>
-          
+
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-center space-x-2 mb-2">
               {isConnected ? (
@@ -160,16 +160,16 @@ function App() {
           </div>
         </div>
       </div>
-      
-      <Dialog 
-        isOpen={isDialogOpen} 
+
+      <Dialog
+        isOpen={isDialogOpen}
         onClose={closeDialog}
         maxWidth="max-w-2xl"
         title={
-          dialogContent === 'chat' 
-            ? 'General Chat' 
-            : dialogContent === 'support' 
-              ? 'Support Channel' 
+          dialogContent === 'chat'
+            ? 'General Chat'
+            : dialogContent === 'support'
+              ? 'Support Channel'
               : 'Notifications'
         }
       >
